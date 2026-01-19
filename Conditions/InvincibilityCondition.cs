@@ -1,10 +1,12 @@
 ﻿using BepInEx.Configuration;
 using System;
 
-namespace Silksong.InvincibilityMonitor;
+namespace Silksong.InvincibilityMonitor.Conditions;
 
 internal abstract class InvincibilityCondition
 {
+    internal const string SECTION = "Conditions";
+
     private readonly InvincibilityMonitorPlugin plugin;
 
     internal InvincibilityCondition(InvincibilityMonitorPlugin plugin)
@@ -29,7 +31,7 @@ internal abstract class InvincibilityCondition
         if (IsEnabled) OnEnable();
     }
 
-    protected abstract string Key { get; }
+    public abstract string Key { get; }
 
     protected abstract string Description { get; }
 
