@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11408.92 d18.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silksong.InvincibilityMonitor", "Silksong.InvincibilityMonitor.csproj", "{D3805117-973D-21E0-26E3-6C2170606F80}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D3805117-973D-21E0-26E3-6C2170606F80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3805117-973D-21E0-26E3-6C2170606F80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3805117-973D-21E0-26E3-6C2170606F80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3805117-973D-21E0-26E3-6C2170606F80}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A227D215-2843-4AFD-A1FA-748300505565}
+	EndGlobalSection
+EndGlobal
