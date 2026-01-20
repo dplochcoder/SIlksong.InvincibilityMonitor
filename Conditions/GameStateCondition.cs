@@ -10,26 +10,19 @@ internal abstract class GameStateCondition(InvincibilityMonitorPlugin plugin, Li
     {
         Active = GameManager.instance != null && gameStates.Contains(GameManager.instance.GameState);
 
-        LifecycleUtil.OnGameManagerAwake += OnGameManagerAwake;
+        Events.OnGameStateChanged += OnGameStateChanged;
         LifecycleUtil.OnGameManagerDestroy += OnGameManagerDestroy;
     }
 
     protected override void OnDisable()
     {
-        if (GameManager.instance != null) GameManager.instance.GameStateChange -= GameStateChange;
-        LifecycleUtil.OnGameManagerAwake -= OnGameManagerAwake;
+        Events.OnGameStateChanged -= OnGameStateChanged;
         LifecycleUtil.OnGameManagerDestroy -= OnGameManagerDestroy;
 
         Active = false;
     }
 
-    private void OnGameManagerAwake(GameManager gameManager)
-    {
-        Active = gameStates.Contains(gameManager.GameState);
-        gameManager.GameStateChange += GameStateChange;
-    }
-
     private void OnGameManagerDestroy(GameManager gameManager) => Active = false;
 
-    private void GameStateChange(GameState gameState) => Active = gameStates.Contains(gameState);
+    private void OnGameStateChanged(GameState gameState) => Active = gameStates.Contains(gameState);
 }

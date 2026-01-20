@@ -7,7 +7,7 @@ internal abstract class InvincibilityCondition
 {
     internal const string SECTION = "Conditions";
 
-    private readonly InvincibilityMonitorPlugin plugin;
+    protected readonly InvincibilityMonitorPlugin plugin;
 
     internal InvincibilityCondition(InvincibilityMonitorPlugin plugin)
     {

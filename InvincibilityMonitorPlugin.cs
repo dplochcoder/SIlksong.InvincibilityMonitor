@@ -121,7 +121,7 @@ public partial class InvincibilityMonitorPlugin : BaseUnityPlugin, IModMenuCusto
 
     private float invincibilityCooldown = 0f;  // Cooldown before invincibility goes away.
 
-    private void Update()
+    private void UpdateInvincibility()
     {
         if (HasInvincibilityCondition) invincibilityCooldown = gracePeriodConfig?.Value ?? 0;
         else if (invincibilityCooldown > 0)
@@ -129,6 +129,16 @@ public partial class InvincibilityMonitorPlugin : BaseUnityPlugin, IModMenuCusto
             invincibilityCooldown -= Time.deltaTime;
             if (invincibilityCooldown < 0) invincibilityCooldown = 0;
         }
+    }
+
+    internal event Action? OnUpdate;
+
+    private void InvokeCallbacks() => OnUpdate?.Invoke();
+
+    private void Update()
+    {
+        UpdateInvincibility();
+        InvokeCallbacks();
     }
 
     private bool OverrideIsInvincible(PlayerData playerData, string name, bool orig) => orig || (name == nameof(PlayerData.isInvincible) && IsCurrentlyInvincible);
