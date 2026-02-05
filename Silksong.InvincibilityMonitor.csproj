@@ -26,7 +26,7 @@
     <Description>Make Hornet invincible in specific states.</Description>
     <ManagedFolder Condition="$(SilksongFolder) != ''">$(SilksongFolder)/Hollow Knight Silksong_Data/Managed</ManagedFolder>
     <!-- Set to true to use local references for development purposes. -->
-    <UseLocalRefs>true</UseLocalRefs>
+    <UseLocalRefs>false</UseLocalRefs>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.0.8" PrivateAssets="all" />
@@ -41,14 +41,12 @@
     <PackageReference Include="Silksong.FsmUtil" Version="0.3.8" />
     <PackageReference Include="Silksong.ModMenu" Version="0.2.0" />
     <PackageReference Include="Silksong.PrepatcherPlugin" Version="1.3.0" PrivateAssets="all" />
+    <!-- FIXME: DebugMod should be on nuget -->
+    <Reference Include="DebugMod">
+      <HintPath>$(SilksongPluginsFolder)/hk_speedrunning-DebugMod/DebugMod.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
-  <ItemGroup Condition="$(UseLocalRefs)">
-    <LocalReferences Include="$(SilksongPluginsFolder)/hk_speedrunning-DebugMod/DebugMod.dll" />
-  </ItemGroup>
-  <ItemGroup Condition="!$(UseLocalRefs)">
-    <PackageReference Include="Silksong.DebugMod" Version="0.3.2" />
-  </ItemGroup>
   <ItemGroup Condition="!$(UseLocalRefs) Or !Exists($(ManagedFolder))">
     <PackageReference Include="Silksong.GameLibs" Version="*-*" PrivateAssets="all" />
   </ItemGroup>
@@ -75,7 +73,7 @@
     </PropertyGroup>
 
     <!-- Local install -->
-    <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongPluginsFolder)/dplochcoder-$(AssemblyTitle)/%(Binaries.LocalDir)" Condition="'$(SilksongPluginsFolder)' != '' And Exists('$(SilksongPluginsFolder)')" />
+    <Copy SourceFiles="@(Binaries)" DestinationFolder="$(SilksongPluginsFolder)/dplochcoder-$(ThunderStoreTitle)/%(Binaries.LocalDir)" Condition="'$(SilksongPluginsFolder)' != '' And Exists('$(SilksongPluginsFolder)')" />
 
     <!-- Thunderstore packaging -->
     <RemoveDir Directories="$(ThunderstoreDir)/temp;$(ThunderstoreDir)/dist" />
