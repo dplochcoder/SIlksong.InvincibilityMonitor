@@ -39,12 +39,21 @@
     <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.25.0" PrivateAssets="all" />
     <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" />
     <PackageReference Include="Silksong.FsmUtil" Version="0.3.8" />
-    <PackageReference Include="Silksong.ModMenu" Version="0.2.0" />
     <PackageReference Include="Silksong.PrepatcherPlugin" Version="1.3.0" PrivateAssets="all" />
+    <PackageReference Include="Silksong.UnityHelper" Version="1.1.1" />
     <!-- FIXME: DebugMod should be on nuget -->
     <Reference Include="DebugMod">
       <HintPath>$(SilksongPluginsFolder)/hk_speedrunning-DebugMod/DebugMod.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="$(UseLocalRefs)">
+    <Reference Include="Silksong.ModMenu">
+      <HintPath>$(SilksongPluginsFolder)/silksong_modding-ModMenu/Silksong.ModMenu.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="!$(UseLocalRefs)">
+    <PackageReference Include="Silksong.ModMenu" Version="0.4.1" />
   </ItemGroup>
 
   <ItemGroup Condition="!$(UseLocalRefs) Or !Exists($(ManagedFolder))">
