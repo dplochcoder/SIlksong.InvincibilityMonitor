@@ -1,5 +1,7 @@
 ﻿using BepInEx.Configuration;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Silksong.InvincibilityMonitor.Conditions;
 
@@ -91,4 +93,13 @@ internal abstract class InvincibilityCondition
 
     // Invoked when IsEnabledAndActive changes.
     public event Action<bool>? OnEnabledAndActiveChanged;
+
+    internal static List<InvincibilityCondition> CreateAllConditions(InvincibilityMonitorPlugin plugin) => [
+        new BenchCondition(plugin),
+        new CutsceneCondition(plugin),
+        new DialogueCondition(plugin),
+        new EndgameCondition(plugin),
+        new RoarLockCondition(plugin),
+        new TransitioningCondition(plugin),
+    ];
 }

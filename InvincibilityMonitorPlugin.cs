@@ -46,13 +46,11 @@ public partial class InvincibilityMonitorPlugin : BaseUnityPlugin, IModMenuCusto
             0.2f,
             new("Time (seconds) for invincibility to wear off.", tags: [(ConfigEntryFactory.MenuElementGenerator)CreateGracePeriodElement]));
 
-        List<Type> types = [.. typeof(InvincibilityMonitorPlugin).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(InvincibilityCondition)) && !t.IsAbstract).OrderBy(t => t.Name)];
-        foreach (var type in types)
+        foreach (var condition in InvincibilityCondition.CreateAllConditions(this))
         {
             int index = activeConditions.Count;
             activeConditions.Add(false);
 
-            InvincibilityCondition condition = (InvincibilityCondition)type.GetConstructor([typeof(InvincibilityMonitorPlugin)]).Invoke([this]);
             conditionNames.Add(condition.Key);
 
             void OnChange(bool value)
