@@ -41,6 +41,10 @@
     <PackageReference Include="Silksong.FsmUtil" Version="0.3.8" />
     <PackageReference Include="Silksong.PrepatcherPlugin" Version="1.3.0" PrivateAssets="all" />
     <PackageReference Include="Silksong.UnityHelper" Version="1.1.1" />
+    <!-- FIXME: PurenailUtil should be on nuget -->
+    <Reference Include="PurenailUtil">
+      <HintPath>$(SilksongPluginsFolder)/dplochcoder-PurenailUtil/Silksong.PurenailUtil.dll</HintPath>
+    </Reference>
     <!-- FIXME: DebugMod should be on nuget -->
     <Reference Include="DebugMod">
       <HintPath>$(SilksongPluginsFolder)/hk_speedrunning-DebugMod/DebugMod.dll</HintPath>

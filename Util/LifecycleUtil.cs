@@ -1,5 +1,4 @@
-﻿using GlobalEnums;
-using MonoDetour;
+﻿using MonoDetour;
 using MonoDetour.HookGen;
 using System;
 using System.Collections.Generic;

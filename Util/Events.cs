@@ -1,8 +1,8 @@
 ﻿using GlobalEnums;
 using MonoDetour;
 using MonoDetour.HookGen;
+using Silksong.PurenailUtil.Collections;
 using System;
-using System.Collections.Generic;
 
 namespace Silksong.InvincibilityMonitor.Util;
 
@@ -10,55 +10,21 @@ namespace Silksong.InvincibilityMonitor.Util;
 [MonoDetourTargets(typeof(PlayMakerFSM))]
 internal static class Events
 {
-    private static readonly Dictionary<string, HashSet<Action<PlayMakerFSM>>> fsmEditsByName = [];
-    private static readonly Dictionary<string, Dictionary<string, HashSet<Action<PlayMakerFSM>>>> fsmEditsByObjAndName = [];
+    private static readonly HashMultimap<string, Action<PlayMakerFSM>> fsmEditsByName = [];
+    private static readonly HashMultitable<string, string, Action<PlayMakerFSM>> fsmEditsByObjAndName = [];
 
-    internal static void AddFsmEdit(string fsmName, Action<PlayMakerFSM> edit)
-    {
-        if (!fsmEditsByName.TryGetValue(fsmName, out var set)) fsmEditsByName.Add(fsmName, [edit]);
-        else set.Add(edit);
-    }
+    internal static void AddFsmEdit(string fsmName, Action<PlayMakerFSM> edit) => fsmEditsByName.Add(fsmName, edit);
 
-    internal static void AddFsmEdit(string objName, string fsmName, Action<PlayMakerFSM> edit)
-    {
-        if (!fsmEditsByObjAndName.TryGetValue(objName, out var dict))
-        {
-            dict = [];
-            fsmEditsByObjAndName.Add(objName, dict);
-        }
+    internal static void AddFsmEdit(string objName, string fsmName, Action<PlayMakerFSM> edit) => fsmEditsByObjAndName.Add(objName, fsmName, edit);
 
-        if (!dict.TryGetValue(fsmName, out var set)) dict.Add(fsmName, [edit]);
-        else set.Add(edit);
-    }
+    internal static void RemoveFsmEdit(string fsmName, Action<PlayMakerFSM> edit) => fsmEditsByName.Remove(fsmName, edit);
 
-    internal static void RemoveFsmEdit(string fsmName, Action<PlayMakerFSM> edit)
-    {
-        if (fsmEditsByName.TryGetValue(fsmName, out var set) && set.Remove(edit) && set.Count == 0) fsmEditsByName.Remove(fsmName);
-    }
-
-    internal static void RemoveFsmEdit(string objName, string fsmName, Action<PlayMakerFSM> edit)
-    {
-        if (fsmEditsByObjAndName.TryGetValue(objName, out var dict))
-        {
-            if (dict.TryGetValue(fsmName, out var set) && set.Remove(edit) && set.Count == 0)
-            {
-                dict.Remove(fsmName);
-                if (dict.Count == 0) fsmEditsByObjAndName.Remove(objName);
-            }
-        }
-    }
+    internal static void RemoveFsmEdit(string objName, string fsmName, Action<PlayMakerFSM> edit) => fsmEditsByObjAndName.Remove(objName, fsmName, edit);
 
     private static void OnEnable(PlayMakerFSM fsm)
     {
-        if (fsmEditsByName.TryGetValue(fsm.FsmName, out var actions))
-        {
-            foreach (var action in actions) action(fsm);
-        }
-
-        if (fsmEditsByObjAndName.TryGetValue(fsm.gameObject.name, out var dict) && dict.TryGetValue(fsm.FsmName, out actions))
-        {
-            foreach (var action in actions) action(fsm);
-        }
+        foreach (var action in fsmEditsByName.Get(fsm.FsmName)) action(fsm);
+        foreach (var action in fsmEditsByObjAndName.Get(fsm.gameObject.name, fsm.FsmName)) action(fsm);
     }
 
     internal static event Action<GameState>? OnGameStateChanged;
