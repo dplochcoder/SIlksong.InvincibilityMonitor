@@ -1,6 +1,7 @@
 using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Configuration;
+using MonoDetour;
 using Silksong.InvincibilityMonitor.Conditions;
 using Silksong.ModMenu.Elements;
 using Silksong.ModMenu.Models;
@@ -30,6 +31,8 @@ public partial class InvincibilityMonitorPlugin : BaseUnityPlugin, IModMenuCusto
 
     private void Awake()
     {
+        MonoDetourManager.InvokeHookInitializers(System.Reflection.Assembly.GetExecutingAssembly());
+
         pluginEnabledConfig = Config.Bind(configDefinition: new("Main", "Enabled"),
             false,
             configDescription: new("Whether to apply any invincibility rules at all."));
