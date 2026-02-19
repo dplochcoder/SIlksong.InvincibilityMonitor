@@ -9,7 +9,6 @@ using Silksong.ModMenu.Plugin;
 using Silksong.ModMenu.Screens;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Silksong.InvincibilityMonitor;
