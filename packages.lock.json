@@ -67,9 +67,9 @@
       },
       "Silksong.FsmUtil": {
         "type": "Direct",
-        "requested": "[0.3.8, )",
-        "resolved": "0.3.8",
-        "contentHash": "C9AzL1z/51m6cOJEbeJN3KYKkUcrtZN3e3ANVGxwl0Whm84FvDBA2IHzBlWZZ1BYFAC9yDoWi7m5lFPYIiZO3w==",
+        "requested": "[0.3.13, )",
+        "resolved": "0.3.13",
+        "contentHash": "CUZ7PKKUu3O7byEW4iEOkVOGcJPbHI28Z7D+Pn0LMxiSv/VjIjixG4JYH6GMgbE4uIbtpfF1Bon769cJt2w1RQ==",
         "dependencies": {
           "BepInEx.Core": "5.4.21",
           "HarmonyX": "2.9.0",

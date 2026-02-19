@@ -38,7 +38,7 @@
     <PackageReference Include="MonoDetour.HookGen" Version="0.7.3" />
     <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.25.0" PrivateAssets="all" />
     <PackageReference Include="UnityEngine.Modules" Version="6000.0.50" IncludeAssets="compile" />
-    <PackageReference Include="Silksong.FsmUtil" Version="0.3.8" />
+    <PackageReference Include="Silksong.FsmUtil" Version="0.3.13" />
     <PackageReference Include="Silksong.PrepatcherPlugin" Version="1.3.0" PrivateAssets="all" />
     <PackageReference Include="Silksong.UnityHelper" Version="1.1.1" />
     <!-- FIXME: PurenailUtil should be on nuget -->

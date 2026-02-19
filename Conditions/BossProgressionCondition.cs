@@ -32,13 +32,13 @@ internal class BossProgressionCondition(InvincibilityMonitorPlugin plugin) : Inv
     }
 
     // belltown_shrine
-    private void EditWeaver(PlayMakerFSM fsm) => fsm.GetState("Death Stagger")?.InsertMethod2(0, () => Active = true);
+    private void EditWeaver(PlayMakerFSM fsm) => fsm.GetState("Death Stagger")?.InsertMethod(0, () => Active = true);
 
     // cradle_03
-    private void EditGMS(PlayMakerFSM fsm) => fsm.GetState("Death Hit")!.InsertMethod2(0, () => Active = true);
+    private void EditGMS(PlayMakerFSM fsm) => fsm.GetState("Death Hit")!.InsertMethod(0, () => Active = true);
 
     // abyss_coccoon
-    private void EditLostLace(PlayMakerFSM fsm) => fsm.GetState("Allow Death")!.InsertMethod2(0, () => Active = true);
+    private void EditLostLace(PlayMakerFSM fsm) => fsm.GetState("Allow Death")!.InsertMethod(0, () => Active = true);
 
     private void SetInactive() => Active = false;
 }

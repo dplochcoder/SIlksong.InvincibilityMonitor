@@ -56,8 +56,8 @@ internal class DialogueCondition(InvincibilityMonitorPlugin plugin) : CallbackCo
     {
         if (!fsm.HasStates(["Get Text", "Confirm", "Cancel", "Start Sequence", "Wait For Currency Counter", "Taking Currency", "Wait Frame", "Before Sequence Pause", "Keep Reach", "End"])) return;
 
-        fsm.GetState("Start Sequence")!.AddMethod2(() => activeTolls.Add(fsm));
-        fsm.GetState("End")!.InsertMethod2(0, () => activeTolls.Remove(fsm));
+        fsm.GetState("Start Sequence")!.AddMethod(() => activeTolls.Add(fsm));
+        fsm.GetState("End")!.InsertMethod(0, () => activeTolls.Remove(fsm));
         fsm.gameObject.DoOnDestroy(() => activeTolls.Remove(fsm));
     }
 
