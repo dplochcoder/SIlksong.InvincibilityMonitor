@@ -99,6 +99,7 @@ internal abstract class InvincibilityCondition
         new BossProgressionCondition(plugin),
         new CutsceneCondition(plugin),
         new DialogueCondition(plugin),
+        new NeedolinCondition(plugin),
         new PickupCondition(plugin),
         new RoarLockCondition(plugin),
         new TransitioningCondition(plugin),
