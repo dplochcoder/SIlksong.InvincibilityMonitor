@@ -30,7 +30,9 @@ internal class DialogueCondition(InvincibilityMonitorPlugin plugin) : CallbackCo
         || boneBeasts.Any(b => boneBeastTravelStates.Contains(b.ActiveStateName))
         || ventricas.Any(v => ventricaTravelStates.Contains(v.ActiveStateName));
 
+#pragma warning disable IDE0075 // Cannot simplify because it's a Unity object.
     private static bool IsActive(InventoryPaneBase? pane) => pane != null ? pane.IsPaneActive : false;
+#pragma warning restore IDE0075
 
     private static bool IsActive(QuestManager qm) => qm.spawnedQuestAcceptedSequence.activeInHierarchy || qm.spawnedQuestFinishedSequence.activeInHierarchy;
 
