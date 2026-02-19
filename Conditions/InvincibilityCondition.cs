@@ -95,9 +95,9 @@ internal abstract class InvincibilityCondition
 
     internal static List<InvincibilityCondition> CreateAllConditions(InvincibilityMonitorPlugin plugin) => [
         new BenchCondition(plugin),
+        new BossProgressionCondition(plugin),
         new CutsceneCondition(plugin),
         new DialogueCondition(plugin),
-        new EndgameCondition(plugin),
         new RoarLockCondition(plugin),
         new TransitioningCondition(plugin),
     ];
