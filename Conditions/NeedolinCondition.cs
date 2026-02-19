@@ -1,4 +1,5 @@
-﻿using HutongGames.PlayMaker.Actions;
+﻿using HutongGames.PlayMaker;
+using HutongGames.PlayMaker.Actions;
 using MonoDetour;
 using MonoDetour.HookGen;
 using Silksong.InvincibilityMonitor.Util;
@@ -22,7 +23,9 @@ internal class NeedolinCondition : CallbackCondition
     private readonly HashSet<CheckHeroPerformanceRegion> checks = [];
     private readonly HashSet<CheckHeroPerformanceRegionV2> checksV2 = [];
 
-    protected override bool Callback() => checks.Any(c => c.None.Name != "" && c.active) || checksV2.Any(c => c.None.Name != "" && c.active);
+    private static bool IsNone(FsmEvent? fsmEvent) => fsmEvent == null || fsmEvent.name == "";
+
+    protected override bool Callback() => checks.Any(c => !IsNone(c.None) && c.active) || checksV2.Any(c => !IsNone(c.None) && c.active);
 
     private static void PostfixOnEnter(CheckHeroPerformanceRegion self)
     {
