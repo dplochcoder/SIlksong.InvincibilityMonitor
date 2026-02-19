@@ -1,20 +1,29 @@
-﻿using Silksong.FsmUtil;
+﻿using MonoDetour;
+using MonoDetour.HookGen;
+using Silksong.FsmUtil;
 using Silksong.InvincibilityMonitor.Util;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Silksong.InvincibilityMonitor.Conditions;
 
-internal class DialogueCondition(InvincibilityMonitorPlugin plugin) : CallbackCondition(plugin)
+[MonoDetourTargets(typeof(QuestItemBoard))]
+internal class DialogueCondition : CallbackCondition
 {
+    private static DialogueCondition? instance;
+
+    internal DialogueCondition(InvincibilityMonitorPlugin plugin) : base(plugin) => instance = this;
+
     private readonly HashSet<PlayMakerFSM> activeShops = [];
     private readonly HashSet<PlayMakerFSM> activeTolls = [];
+    private readonly HashSet<QuestItemBoard> questBoards = [];
+    private readonly HashSet<PlayMakerFSM> questBoardFsms = [];
 
     private static readonly HashSet<string> boneBeastTravelStates = ["Open map", "Choose Scene", "Fade", "Hero Jump", "Hero Fire", "Jump Sing", "Time Passes", "Go To Stag Cutscene"];
-    private readonly HashSet<PlayMakerFSM> boneBeasts = [];
+    private readonly HashSet<PlayMakerFSM> boneBeastFsms = [];
 
     private static readonly HashSet<string> ventricaTravelStates = ["Interacted", "Hop In Antic", "Hop In", "Land In", "Open map", "Choose Scene", "Preload Scene", "Hero Press Button", "Close", "Leave", "Save State", "Fade Out", "Go To Next Scene"];
-    private readonly HashSet<PlayMakerFSM> ventricas = [];
+    private readonly HashSet<PlayMakerFSM> ventricaFsms = [];
 
     public override string Key => "Dialogue";
 
@@ -25,10 +34,12 @@ internal class DialogueCondition(InvincibilityMonitorPlugin plugin) : CallbackCo
         || (QuestManager.instance != null && IsActive(QuestManager.instance))
         || (DialogueYesNoBox._instance != null && IsActive(DialogueYesNoBox._instance.pane))
         || (DialogueBox._instance != null && DialogueBox._instance.isDialogueRunning)
-        || activeShops.Any(s => s.ActiveStateName != "Init" && s.ActiveStateName != "Idle")
+        || activeShops.Any(s => s.Active && s.ActiveStateName != "Init" && s.ActiveStateName != "Idle")
         || activeTolls.Count > 0
-        || boneBeasts.Any(b => boneBeastTravelStates.Contains(b.ActiveStateName))
-        || ventricas.Any(v => ventricaTravelStates.Contains(v.ActiveStateName));
+        || questBoards.Any(b => IsActive(b.pane))
+        || questBoardFsms.Any(f => f.Active && f.ActiveStateName != "Idle")
+        || boneBeastFsms.Any(b => boneBeastTravelStates.Contains(b.ActiveStateName))
+        || ventricaFsms.Any(v => ventricaTravelStates.Contains(v.ActiveStateName));
 
 #pragma warning disable IDE0075 // Cannot simplify because it's a Unity object.
     private static bool IsActive(InventoryPaneBase? pane) => pane != null ? pane.IsPaneActive : false;
@@ -41,6 +52,7 @@ internal class DialogueCondition(InvincibilityMonitorPlugin plugin) : CallbackCo
         base.OnEnable();
         Events.AddFsmEdit("FSM", EditTollFsm);
         Events.AddFsmEdit("shop_control", EditShopFsm);
+        Events.AddFsmEdit("Quest Board", "Hand In Sequence", EditQuestBoardFsm);
         Events.AddFsmEdit("Bone Beast NPC", "Interaction", EditBoneBeastFsm);
         Events.AddFsmEdit("City Travel Tube", "Tube Travel", EditVentricaFsm);
     }
@@ -49,6 +61,7 @@ internal class DialogueCondition(InvincibilityMonitorPlugin plugin) : CallbackCo
     {
         Events.RemoveFsmEdit("FSM", EditTollFsm);
         Events.RemoveFsmEdit("shop_control", EditShopFsm);
+        Events.RemoveFsmEdit("Quest Board", "Hand In Sequence", EditQuestBoardFsm);
         Events.RemoveFsmEdit("Bone Beast NPC", "Interaction", EditBoneBeastFsm);
         Events.RemoveFsmEdit("City Travel Tube", "Tube Travel", EditVentricaFsm);
         base.OnDisable();
@@ -69,15 +82,30 @@ internal class DialogueCondition(InvincibilityMonitorPlugin plugin) : CallbackCo
         fsm.gameObject.DoOnDestroy(() => activeShops.Remove(fsm));
     }
 
+    private void EditQuestBoardFsm(PlayMakerFSM fsm)
+    {
+        questBoardFsms.Add(fsm);
+        fsm.gameObject.DoOnDestroy(() => questBoardFsms.Remove(fsm));
+    }
+
     private void EditBoneBeastFsm(PlayMakerFSM fsm)
     {
-        boneBeasts.Add(fsm);
-        fsm.gameObject.DoOnDestroy(() => boneBeasts.Remove(fsm));
+        boneBeastFsms.Add(fsm);
+        fsm.gameObject.DoOnDestroy(() => boneBeastFsms.Remove(fsm));
     }
 
     private void EditVentricaFsm(PlayMakerFSM fsm)
     {
-        ventricas.Add(fsm);
-        fsm.gameObject.DoOnDestroy(() => ventricas.Remove(fsm));
+        ventricaFsms.Add(fsm);
+        fsm.gameObject.DoOnDestroy(() => ventricaFsms.Remove(fsm));
     }
+
+    private static void PrefixQuestBoardAwake(QuestItemBoard self)
+    {
+        instance?.questBoards.Add(self);
+        self.gameObject.DoOnDestroy(() => instance?.questBoards.Remove(self));
+    }
+
+    [MonoDetourHookInitialize]
+    private static void Hook() => Md.QuestItemBoard.Awake.Prefix(PrefixQuestBoardAwake);
 }
