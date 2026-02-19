@@ -94,6 +94,7 @@ internal abstract class InvincibilityCondition
     public event Action<bool>? OnEnabledAndActiveChanged;
 
     internal static List<InvincibilityCondition> CreateAllConditions(InvincibilityMonitorPlugin plugin) => [
+        new AnimationCondition(plugin),
         new BenchCondition(plugin),
         new BossProgressionCondition(plugin),
         new CutsceneCondition(plugin),
