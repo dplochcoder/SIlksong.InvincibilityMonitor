@@ -1,4 +1,6 @@
-﻿using MonoDetour;
+﻿using HutongGames.PlayMaker;
+using HutongGames.PlayMaker.Actions;
+using MonoDetour;
 using MonoDetour.HookGen;
 using Silksong.FsmUtil;
 using Silksong.InvincibilityMonitor.Util;
@@ -15,7 +17,7 @@ internal class DialogueCondition : CallbackCondition
     internal DialogueCondition(InvincibilityMonitorPlugin plugin) : base(plugin) => instance = this;
 
     private readonly HashSet<PlayMakerFSM> activeShops = [];
-    private readonly HashSet<PlayMakerFSM> activeTolls = [];
+    private readonly HashSet<Fsm> activeTolls = [];
     private readonly HashSet<QuestItemBoard> questBoards = [];
     private readonly HashSet<PlayMakerFSM> questBoardFsms = [];
 
@@ -50,7 +52,7 @@ internal class DialogueCondition : CallbackCondition
     protected override void OnEnable()
     {
         base.OnEnable();
-        Events.AddFsmEdit("FSM", EditTollFsm);
+        Events.AddRawFsmEdit(EditTollFsm);
         Events.AddFsmEdit("shop_control", EditShopFsm);
         Events.AddFsmEdit("Quest Board", "Hand In Sequence", EditQuestBoardFsm);
         Events.AddFsmEdit("Bone Beast NPC", "Interaction", EditBoneBeastFsm);
@@ -59,7 +61,7 @@ internal class DialogueCondition : CallbackCondition
 
     protected override void OnDisable()
     {
-        Events.RemoveFsmEdit("FSM", EditTollFsm);
+        Events.RemoveRawFsmEdit(EditTollFsm);
         Events.RemoveFsmEdit("shop_control", EditShopFsm);
         Events.RemoveFsmEdit("Quest Board", "Hand In Sequence", EditQuestBoardFsm);
         Events.RemoveFsmEdit("Bone Beast NPC", "Interaction", EditBoneBeastFsm);
@@ -67,13 +69,13 @@ internal class DialogueCondition : CallbackCondition
         base.OnDisable();
     }
 
-    private void EditTollFsm(PlayMakerFSM fsm)
+    private void EditTollFsm(Fsm fsm)
     {
         if (!fsm.HasStates(["Get Text", "Confirm", "Cancel", "Start Sequence", "Wait For Currency Counter", "Taking Currency", "Wait Frame", "Before Sequence Pause", "Keep Reach", "End"])) return;
 
         fsm.GetState("Start Sequence")!.AddMethod(() => activeTolls.Add(fsm));
         fsm.GetState("End")!.InsertMethod(0, () => activeTolls.Remove(fsm));
-        fsm.gameObject.DoOnDestroy(() => activeTolls.Remove(fsm));
+        fsm.Host.FsmComponent.gameObject.DoOnDestroy(() => activeTolls.Remove(fsm));
     }
 
     private void EditShopFsm(PlayMakerFSM fsm)
