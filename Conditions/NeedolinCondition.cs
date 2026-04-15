@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using MonoDetour;
 using MonoDetour.HookGen;
@@ -25,11 +24,10 @@ internal class NeedolinCondition : CallbackCondition
     private readonly HashSet<CheckHeroPerformanceRegion> checks = [];
     private readonly HashSet<CheckHeroPerformanceRegionV2> checksV2 = [];
 
-    private static bool IsNone(FsmEvent? fsmEvent) => fsmEvent == null || fsmEvent.name == "";
-
     protected override bool Callback() =>
-        checks.Any(c => !IsNone(c.None) && c.active)
-        || checksV2.Any(c => !IsNone(c.None) && c.active);
+        HeroPerformanceRegion.IsPerforming
+        && (checks.Any(c => c.affectedState == HeroPerformanceRegion.AffectedState.ActiveInner)
+            || checksV2.Any(c => c.affectedState == HeroPerformanceRegion.AffectedState.ActiveInner));
 
     private static void PostfixOnEnter(CheckHeroPerformanceRegion self)
     {
