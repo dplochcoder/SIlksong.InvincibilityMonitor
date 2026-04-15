@@ -79,6 +79,7 @@ internal abstract class InvincibilityCondition
             if (field == value)
                 return;
             DoUpdate(() => field = value);
+            IsEnabled = plugin.PluginEnabled && value;
         }
     }
 
